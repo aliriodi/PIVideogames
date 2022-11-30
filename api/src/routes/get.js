@@ -1,19 +1,19 @@
 const { Router } = require('express');
 const router = Router();
-const { OP } = require ('sequelize');
-const { dbGenres , dbPlatforms,stToObj} = require('./controllers');
-const {Genres, Videogame, Platforms}=require('../db');
+const { dbGenres , dbPlatforms,stToObj, videogamesAPI} = require('./controllers');
+const {Genres, Videogame, Platforms, videogamegenres}=require('../db');
 require("dotenv").config(); 
-const webgen=process.env.WEB_GENRES+process.env.API_TOKEN;
 const webplat=process.env.WEB_PLATFORMS+process.env.API_TOKEN;
+let arrayResultsV = [];
+let arrayResultsVwQ=[];
 /** GET /genres:  */
 router.get('/genres', async(req, res) => {
     try {
         await dbGenres();
         let genres = await Genres.findAll();
         genres.length ? 
-            res.status(200).json(genres) :
-            res.status(404).send("No se encuentran generos");
+            res.json(genres) :
+            res.send("No se encuentran generos");
     } catch(error) {
         console.log(error);
     }
@@ -21,93 +21,99 @@ router.get('/genres', async(req, res) => {
 /** GET /platforms: */
 router.get('/platforms', async(req, res) => {
     try { 
-        for (i=0;i<5;i++){ 
+        for (i=0;i<6;i++){ 
             let webplat1;
             if(i===0){webplat1 = webplat;}
-            else{webplat1 = webplat+'page'+i++ }
-            await dbPlatforms(webplat1);
+            else{webplat1 = webplat+'&page='+ i }
+            if(i!==1){await dbPlatforms(webplat1);
+                      console.log(webplat1)}
         } 
         await dbPlatforms();
         let platforms = await Platforms.findAll();
         platforms.length ? 
-            res.status(200).json(platforms) :
-            res.status(404).send("No se encuentran plataformas");
+            res.json(platforms) :
+            res.send("No se encuentran plataformas");
     } catch(error) {
         console.log(error);
     }
 });
 
-/** GET /videogames:  */
+/** GET /videogames:             */
+/**GET  /videogames?name="...":  */
 router.get('/videogames', async(req, res) => {
-    try {
+    let gamegenres;
+    let idmaxV = 0;
+    if(req.query.name){
+        const name = req.query.name.slice(1).slice(0, -1);
+        arrayResultsVwQ = arrayResultsV.filter(game => game.name.toLowerCase().includes(name.toLowerCase()))
+        arrayResultsVwQ.length>15?arrayResultsVwQ=arrayResultsVwQ.slice(0,15):arrayResultsVwQ;
+        res.json({count:arrayResultsVwQ.length,
+            next:null,
+            previous:null,
+             results:arrayResultsVwQ});
+        } 
+else  {    
+     try { 
+        /**              */
+       if(arrayResultsV.length===0)
+       { let result1L = 0;
+        for(let i=0;i<6;i++){
+            let webplat1;
+            if(i===0){webplat1 = webplat;}
+            else{webplat1 = webplat+'&page='+ i } 
+            if(i!==1){
+             const result1 = await videogamesAPI(webplat1);
+             arrayResultsV =  arrayResultsV.concat(await result1)
+            result1L =  result1L + await result1.length;
+             console.log( arrayResultsV.length);
+                          
+        }} }
+        /**/
+         arrayResultsV.forEach(element => element.id>idmaxV? idmaxV=element.id:null)
+          
+        /** */
         let videogames = await Videogame.findAll();
-        if(videogames.length) {let output={}; 
-            for(let i=0;i<videogames.length;i++){
+        if(videogames.length) {let output=[]; 
+            for(let i=0;i<videogames.length;i++){let arrGen =[];
                 let arrPlat=videogames[i].platforms.split(',');
-                
-                const objetoP = await stToObj(arrPlat,Platforms,'platform');
-                //  let objPlat = {};
-
-                // for(let j=0;j<arrPlat.length;j++){
-                //     let namep = await Platforms.findAll(
-                //         {  where: {
-                //             id:arrPlat[j],
-                //           }})
-                //    objPlat[j]={platform:{id:arrPlat[j],
-                //                          name:namep[0].name}}
-                // }
-               // alert(objetoP);
-             output[i]={ id:videogames[i].id,
+                 gamegenres = await videogamegenres.findAll({  where: {
+                    videogameId:videogames[i].id,
+                  }});
+                  for(let j =0; j<gamegenres.length;j++){
+                    if(gamegenres[j].videogameId===videogames[i].id){
+                    arrGen.push(gamegenres[j].genreId);}
+                  }
+                               
+             output[i]={ id:videogames[i].id+idmaxV,
                          name:videogames[i].name,
                          rating:videogames[i].rating,
                          background_image:videogames[i].image,
-                         platforms: await stToObj(arrPlat,Platforms,'platform')/*objPlat*/,
-                         genres: await stToObj(arrGen,Genres,'genre')
-                          }  
+                         platforms: await stToObj(arrPlat,Platforms,'platform'),
+                         genres: await stToObj(arrGen,Genres,'genres')
+                          }   
             }
-             res.status(200).json({count:videogames.length,
+             if(arrayResultsV.length-gamegenres.length===100){}
+            else if (arrayResultsV.length-gamegenres.length<100){  arrayResultsV=arrayResultsV.concat( output)}
+            res.json({count:arrayResultsV.length,
                                    next:null,
                                    previous:null,
-                                   results:output}) }
-            res.status(404).send("No se encuentran videogames");
-    } catch(error) {
+                                   results:arrayResultsV}) }
+         } catch(error) {
         console.log(error);
-    }
+    } }
 });
-/**GET /videogames?name="...":  */
 
-/**GET /videogame/{idVideogame}:  */
+/**GET /videogame/:{idVideogame}  */
 router.get('/videogames/:id', async(req, res) => {
     try {
         const id=req.params.id;
-        let videogameDet = await Videogame.findAll(
-        {  where: {
-            idv:id,
-          }}
-        );
-        if(videogameDet.length){ let platformFormat={};
-                                 let arrplats = videogameDet[0].platforms.split(',')
-            for(let i=0;i<arrplats.length;i++)
-            {
-                let namep = await Platforms.findAll(
-                {  where: {
-                    id:arrplats[i],
-                  }})
-         
-                platformFormat[i] ={platform: 
-                     {id:arrplats[i], 
-                     name:namep[0].name}}}
- 
-             res.status(200).json({id:videogameDet[0].idv,
-                                   name:videogameDet[0].name,
-                                   description:'<ul><li>'+videogameDet[0].description+'</li></ul>',
-                                   released:videogameDet[0].releaseDate,
-                                   background_image:videogameDet[0].image,
-                                   rating:videogameDet[0].rating,
-                                   platforms: platformFormat  
-                                    })} else{
-            res.status(404).send("No se encuentran videogames"); }
-    } catch(error) {
+        let videogameDet=[];
+        arrayResultsV.forEach(element => element.id == id? videogameDet.push(element):null )
+        videogameDet.length? 
+            res.status(200).json(videogameDet[0]):
+            res.status(404).send("No se encuentran videogames o el id no es un numero"); 
+    
+} catch(error) {
         console.log(error);
     }
 });

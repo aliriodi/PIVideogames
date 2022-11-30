@@ -3,6 +3,15 @@ const { Genres, Platforms } = require('../db');
 require("dotenv").config();
 const webgen=process.env.WEB_GENRES+process.env.API_TOKEN;
 //const webplat=process.env.WEB_PLATFORMS+process.env.API_TOKEN;
+
+/**Para videogames */
+const videogamesAPI = async(web) => {
+    const apiUrl = await fetch(web)
+    .then((response)=> response.json())
+    .then (json =>  json.results);
+    return apiUrl;
+};
+
 /* Para Genres Generos*/
 const genresApi = async () => {
     const apiUrl = await fetch(webgen)
@@ -16,13 +25,10 @@ const genresApi = async () => {
 
 //Chequeo si esta los genres en la BD.
 const dbGenres = async () => {
-    //Consulta a la base de datos para ver si tabla esta vacia.
-   let genres = await Genres.findAll();
+    let genres = await Genres.findAll();
     if(genres.length === 0) { 
-        //Los traigo de la api.
-        const arrGenres = await genresApi(); 
-        //https://sequelize.org/docs/v6/core-concepts/model-querying-basics/#creating-in-bulk
-        await Genres.bulkCreate(arrGenres,{ignoreDuplicates: true});
+       const arrGenres = await genresApi(); 
+       await Genres.bulkCreate(arrGenres,{ignoreDuplicates: true});
     } 
 };
 
@@ -32,13 +38,12 @@ const platformsApi = async (webplat) => {
     const apiUrl = await fetch(webplat)
     .then((response) => response.json())
     .then((json) =>  json.results.map(arrayGames=>
-                                       {let a=[]; if(arrayGames.platforms.lenght) 
-                                       {} else{
-                                       for (const i in arrayGames.platforms) {
-                                           a.push({idp: arrayGames.platforms[i].platform.id, name:arrayGames.platforms[i].platform.name})
-                                                                             }
-                                       return a;
-                                    }}                                  ))
+                                       {let a=[];  
+                                          for (const i in arrayGames.platforms) {
+                                          a.push({idp: arrayGames.platforms[i].platform.id, name:arrayGames.platforms[i].platform.name})
+                                          return a;                             }
+                                        }                                  
+                                        ))
                                    .then(result => {let i=0;let j=0;let b=[];
                                                     for(i=0;i<20;i++){
                                                        for(j=0;j<result[i].length;j++){
@@ -71,7 +76,7 @@ const dbPlatforms = async (webplat1) => {
 /**Transformacion String to Object Double */
 const stToObj = async (arrayTransf, Model,objectMain)=>{
     let objectOut = {};
-
+       if(objectMain==='platform'){
                 for(let j=0;j<arrayTransf.length;j++){
                     let namep = await Model.findAll(
                         {  where: {
@@ -80,8 +85,20 @@ const stToObj = async (arrayTransf, Model,objectMain)=>{
                           objectOut[j]={[objectMain]:{id:arrayTransf[j],
                                                  name:namep[0].name}}
                 }
+            }
+           else if(objectMain==='genres')  {
+              for(let j=0;j<arrayTransf.length;j++){
+                let namep = await Model.findAll(
+                    {  where: {
+                        id:arrayTransf[j],
+                      }})
+                      objectOut[j]={id:arrayTransf[j],
+                                    name:namep[0].name}
+            }
+            }
+            else{objectOut={};}
                 return objectOut;
 };
 
 
-module.exports = { dbGenres , dbPlatforms,stToObj};
+module.exports = { dbGenres , dbPlatforms,stToObj, videogamesAPI};
