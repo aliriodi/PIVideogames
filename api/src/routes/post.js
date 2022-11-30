@@ -35,8 +35,8 @@ try{const Idvideogame = await Videogame.findAll(
                                                                   })
    console.log(arrvideogamegen)                                                               
 const videogamegen = await videogamegenres.bulkCreate(arrvideogamegen);
-res.status(200).json("VideoGame creado"); 
-res.status(404).send("VideoGame no creado");}catch(error) {
+res.json("VideoGame creado"); 
+}catch(error) {
     console.log(error);
 }
 

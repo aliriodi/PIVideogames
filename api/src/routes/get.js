@@ -6,6 +6,7 @@ require("dotenv").config();
 const webplat=process.env.WEB_PLATFORMS+process.env.API_TOKEN;
 let arrayResultsV = [];
 let arrayResultsVwQ=[];
+let output=[];
 /** GET /genres:  */
 router.get('/genres', async(req, res) => {
     try {
@@ -52,11 +53,13 @@ router.get('/videogames', async(req, res) => {
             previous:null,
              results:arrayResultsVwQ});
         } 
-else  {    
+else if(!req.query.name) {    
      try { 
         /**              */
+        console.log('pacioencia')
        if(arrayResultsV.length===0)
-       { let result1L = 0;
+       { let result1L = 0; 
+        console.log('entre al if')
         for(let i=0;i<6;i++){
             let webplat1;
             if(i===0){webplat1 = webplat;}
@@ -70,10 +73,12 @@ else  {
         }} }
         /**/
          arrayResultsV.forEach(element => element.id>idmaxV? idmaxV=element.id:null)
-          
+          console.log('linea 75')
         /** */
         let videogames = await Videogame.findAll();
-        if(videogames.length) {let output=[]; 
+         console.log('linea 78')
+         console.log(videogames.length)
+        if(videogames.length) { console.log('linea 79')
             for(let i=0;i<videogames.length;i++){let arrGen =[];
                 let arrPlat=videogames[i].platforms.split(',');
                  gamegenres = await videogamegenres.findAll({  where: {
@@ -91,13 +96,14 @@ else  {
                          platforms: await stToObj(arrPlat,Platforms,'platform'),
                          genres: await stToObj(arrGen,Genres,'genres')
                           }   
-            }
-             if(arrayResultsV.length-gamegenres.length===100){}
-            else if (arrayResultsV.length-gamegenres.length<100){  arrayResultsV=arrayResultsV.concat( output)}
+            }}
+            console.log('linea 97')
+             if(arrayResultsV.length-output.length===100){}
+            else if (arrayResultsV.length-output.length<100){  arrayResultsV=arrayResultsV.concat( output)}
             res.json({count:arrayResultsV.length,
                                    next:null,
                                    previous:null,
-                                   results:arrayResultsV}) }
+                                   results:arrayResultsV}) 
          } catch(error) {
         console.log(error);
     } }
