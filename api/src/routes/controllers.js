@@ -99,6 +99,11 @@ const stToObj = async (arrayTransf, Model,objectMain)=>{
             else{objectOut={};}
                 return objectOut;
 };
-
-
-module.exports = { dbGenres , dbPlatforms,stToObj, videogamesAPI};
+/*Para Id */
+const gameDetail = async (id) => {
+    const apiUrl = await fetch("https://api.rawg.io/api/games/"+id+"?key="+process.env.API_TOKEN)
+    .then((response) => response.json())
+    .then(json => json);
+   return apiUrl;
+};
+module.exports = { dbGenres , dbPlatforms,stToObj, videogamesAPI, gameDetail};

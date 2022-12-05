@@ -1,0 +1,39 @@
+ 
+  nav {
+    width: 100%;
+    max-width: 20000px;
+    height: 7vh;
+    min-height: 60px;
+    padding-top: 8px;
+    padding-right: 280px;
+    background-color: inherit;
+    color: rgba(255, 255, 255);
+    font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+    display: grid;
+    grid-template-columns: 1fr auto;
+    align-items:center;
+    background-color: rgb(58, 21, 220);
+  }
+nav .logo {
+    padding-right: 120px;
+    font-size: 38px;
+    letter-spacing: 5px;
+  }
+/*Home , boxes , projects */
+  .navList {
+    font-size: 17px;
+    text-transform: uppercase;
+    list-style: none;
+    display: flex;
+    gap: 20px;
+  }
+
+  .image{
+    width: 250px;
+   height: 250px;
+ }
+ .description{
+  text-align:center;
+  box-shadow: 2px 2px 10px #246756;
+  padding: 0px;
+  width: 250px;}

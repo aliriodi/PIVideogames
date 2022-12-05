@@ -1,6 +1,7 @@
 const { Router } = require('express');
 const router = Router();
-const { dbGenres , dbPlatforms,stToObj, videogamesAPI} = require('./controllers');
+const axios = require('axios');
+const { dbGenres , dbPlatforms,stToObj, videogamesAPI, gameDetail} = require('./controllers');
 const {Genres, Videogame, Platforms, videogamegenres}=require('../db');
 require("dotenv").config(); 
 const webplat=process.env.WEB_PLATFORMS+process.env.API_TOKEN;
@@ -56,7 +57,7 @@ router.get('/videogames', async(req, res) => {
 else if(!req.query.name) {    
      try { 
         /**              */
-        console.log('pacioencia')
+        console.log('paciencia')
        if(arrayResultsV.length===0)
        { let result1L = 0; 
         console.log('entre al if')
@@ -66,6 +67,7 @@ else if(!req.query.name) {
             else{webplat1 = webplat+'&page='+ i } 
             if(i!==1){
              const result1 = await videogamesAPI(webplat1);
+             
              arrayResultsV =  arrayResultsV.concat(await result1)
             result1L =  result1L + await result1.length;
              console.log( arrayResultsV.length);
@@ -94,7 +96,8 @@ else if(!req.query.name) {
                          rating:videogames[i].rating,
                          background_image:videogames[i].image,
                          platforms: await stToObj(arrPlat,Platforms,'platform'),
-                         genres: await stToObj(arrGen,Genres,'genres')
+                         genres: await stToObj(arrGen,Genres,'genres'),
+                         from:"APIDB"
                           }   
             }}
             console.log('linea 97')
@@ -113,11 +116,28 @@ else if(!req.query.name) {
 router.get('/videogames/:id', async(req, res) => {
     try {
         const id=req.params.id;
+        let videogameDetObj={};
         let videogameDet=[];
-        arrayResultsV.forEach(element => element.id == id? videogameDet.push(element):null )
-        videogameDet.length? 
-            res.status(200).json(videogameDet[0]):
-            res.status(404).send("No se encuentran videogames o el id no es un numero"); 
+        const webid ="https://api.rawg.io/api/games/"+id+"?key="+process.env.API_TOKEN;
+        const result2 =  await gameDetail(id)
+        let platforms = '';           
+                   for(let i=0;i< result2.platforms.length;i++){
+                    if(i<result2.platforms.length-1){platforms+= result2.platforms[i].platform.name+', '}
+                    else{platforms+= result2.platforms[i].platform.name}
+                }
+        videogameDetObj.name=  await result2.name;
+        videogameDetObj.background_image= await result2.background_image;
+        videogameDetObj.rating =await result2.rating;
+        videogameDetObj.released =await result2.released;
+        videogameDetObj.genres= await result2.genres.map((object) => ' '+object.name).toString();
+        videogameDetObj.platforms= platforms;
+        videogameDetObj.description= await result2.description;
+        videogameDet.push(videogameDetObj)
+      
+        videogameDet.length?
+            res.status(200).json(videogameDet[0])
+           :
+            res.status(404).send(videogameDet[0]={name:"Videojuego no existe"}); 
     
 } catch(error) {
         console.log(error);
