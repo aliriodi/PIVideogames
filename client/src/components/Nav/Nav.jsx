@@ -9,26 +9,26 @@ import "./Nav.css";
  export  function Nav({videogames, pagination,getAllVideogames}) {
   const [searchInput, setSearchInput] = useState("");  
   const dispatch = useDispatch();
-    useEffect (() => { 
-        dispatch(getGenres()); 
-       // eslint-disable-next-line react-hooks/exhaustive-deps
-        },[dispatch]);
+    // useEffect (() => { 
+    //     dispatch(getGenres()); 
+    //    // eslint-disable-next-line react-hooks/exhaustive-deps
+    //     },[dispatch]);
         useEffect (() => { 
           dispatch(getAllVideogames()); 
          // eslint-disable-next-line react-hooks/exhaustive-deps
           },[dispatch]);    
 
-    useEffect (() => { dispatch(getPlatforms()); 
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-        },[dispatch]);
+    // useEffect (() => { dispatch(getPlatforms()); 
+    //     // eslint-disable-next-line react-hooks/exhaustive-deps
+    //     },[dispatch]);
       
         return (
         <div ><nav >
-<div className="logo">NavBar</div>
+     <div className="logo">NavBar</div>
    
       <ul className="navList">
       <li className="navLi"><Link to='/home'>HOME </Link></li>
-      <li className="navLi">Crear Videojuegos </li>
+      <li className="navLi"><Link to='/home/create'>CREAR VIDEOGAME </Link> </li>
 
       <li className="navLi">
       <form onSubmit={(e) => {
@@ -40,7 +40,7 @@ import "./Nav.css";
       
       <input
         type="text"
-        placeholder="Videojuego..."
+        placeholder="VideoGame..."
         value={searchInput}
         onChange={e => setSearchInput(e.target.value) } />
       <input type="submit" value="Search" />

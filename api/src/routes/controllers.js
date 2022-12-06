@@ -99,6 +99,32 @@ const stToObj = async (arrayTransf, Model,objectMain)=>{
             else{objectOut={};}
                 return objectOut;
 };
+/**Transformacion String to Array Double */
+const stToArr = async (arrayTransf, Model,ArrMain)=>{
+    let ArrOut = [];
+       if(ArrMain==='platform'){
+                for(let j=0;j<arrayTransf.length;j++){
+                    let namep = await Model.findAll(
+                        {  where: {
+                            id:arrayTransf[j],
+                          }})
+                          ArrOut[j]={[ArrMain]:{id:arrayTransf[j],
+                                                 name:namep[0].name}}
+                }
+            }
+           else if(ArrMain==='genres')  {
+              for(let j=0;j<arrayTransf.length;j++){
+                let namep = await Model.findAll(
+                    {  where: {
+                        id:arrayTransf[j],
+                      }})
+                      ArrOut[j]={id:arrayTransf[j],
+                                    name:namep[0].name}
+            }
+            }
+            else{ArrOut=[];}
+                return ArrOut;
+};
 /*Para Id */
 const gameDetail = async (id) => {
     const apiUrl = await fetch("https://api.rawg.io/api/games/"+id+"?key="+process.env.API_TOKEN)
@@ -106,4 +132,4 @@ const gameDetail = async (id) => {
     .then(json => json);
    return apiUrl;
 };
-module.exports = { dbGenres , dbPlatforms,stToObj, videogamesAPI, gameDetail};
+module.exports = { dbGenres , dbPlatforms,stToObj, videogamesAPI, gameDetail, stToArr};

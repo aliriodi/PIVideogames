@@ -7,7 +7,7 @@
     padding-top: 8px;
     padding-right: 280px;
     background-color: inherit;
-    color: rgba(255, 255, 255);
+    color: rgb(255, 255, 255);
     font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
     display: grid;
     grid-template-columns: 1fr auto;

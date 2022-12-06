@@ -39,8 +39,7 @@ export  function Pagination({pagination,videogames,movepage,order}) {
         {dispatch(movepage({idPageNow:++pagination.idPageNow}));}};
   return (
     <div>
-        
-        <ul className="logo">
+         <ul className="logo">
             <button className="pages" key="a"
                         onClick={() => back()}>   ATRAS </button>
              
@@ -53,18 +52,13 @@ export  function Pagination({pagination,videogames,movepage,order}) {
                   
                    <button className="pages" key="b"
                         onClick={() => forward()}>ADELANTE </button>
-              <div className="dropdown">
-                 <button>Ordenamientos</button>
-  <div className="dropdown-content">
-  <div className="mg-toolbar">
-     <button className="order" key="c" onClick={() => order1('asc0')}>Asc. por Nombre</button>
-     <button className="order" key="d" onClick={() => order1('desc0')}>Desc. por Nombre </button>
+     
+   </ul>
+   <ul> <button className="pages"  key="c" onClick={() => order1('asc0')}>Asc. por Nombre</button>
+     <button className="logo" key="d" onClick={() => order1('desc0')}>Desc. por Nombre </button>
      <button className="order" key="e" onClick={() => order1('asc1')}>Asc. por Rating </button> 
      <button className="order" key="f" onClick={() => order1('desc1')}>Desc por Rating </button>      
-  </div>
-  </div>
-  </div>
-  </ul>
+     </ul>
   </div>
   )
 }

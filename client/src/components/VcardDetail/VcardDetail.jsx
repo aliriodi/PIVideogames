@@ -18,20 +18,19 @@ export  function VcardDetail({videogameDetail}) {
       <nav> <div className="logo">NavBar</div>
        <ul className="navList">
       <li className="navLi"> <Link to='/home'>HOME </Link></li>
-      <li className="navLi">Crear Videojuegos </li>
+      <li className="navLi"><Link to='/home/create'>CREAR VIDEOGAME </Link> </li> 
       </ul>
       </nav>  
-        
-             
+           
         <h1> {videogameDetail.name}</h1>
         <img  className="imageDetail" src={videogameDetail.background_image}  alt={videogameDetail.name}/>
         <div><strong > Fecha de lanzamiento:</strong> {videogameDetail.released}</div>
         <div><strong>Rating: </strong>{videogameDetail.rating}</div>
         <div><strong>Plataformas:</strong> {videogameDetail.platforms}</div>
         <div><strong >Generos:</strong> {videogameDetail.genres}</div>
-        <h3><p> Descripcion</p></h3>
+        <div><strong> Descripcion</strong></div>
         <div className='description'>
-        <div  dangerouslySetInnerHTML={{__html: videogameDetail.description}} />;
+        <div  dangerouslySetInnerHTML={{__html: videogameDetail.description}} />
         </div>
        </div>
   )

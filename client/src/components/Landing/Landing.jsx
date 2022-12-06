@@ -9,7 +9,8 @@ export default function Landing() {
   useEffect (() => { 
   dispatch(getGenres()); // eslint-disable-next-line react-hooks/exhaustive-deps
   },[dispatch]);
-  useEffect (() => { dispatch(getAllVideogames()); // eslint-disable-next-line react-hooks/exhaustive-deps
+  useEffect (() => { dispatch(getAllVideogames()); 
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   },[dispatch]);
   useEffect (() => { dispatch(getPlatforms()); // eslint-disable-next-line react-hooks/exhaustive-deps
   },[dispatch]);
@@ -18,10 +19,8 @@ export default function Landing() {
     <div className="landing">
         <span className="title">Bienvenidos a mi proyecto de VIDEOGAMES</span>
         <span className="subtitle">Para mas detalles entrar al Home</span>
-        <Link to = "/home">
-                <button className="btn">Home</button>
-        </Link>
-                        
+        <span className='span'> <Link className='btnlanding' to = "/home"> Home
+               </Link></span>
     </div>
   )
 }

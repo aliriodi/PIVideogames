@@ -1,7 +1,7 @@
 const { Router } = require('express');
 const router = Router();
 const axios = require('axios');
-const { dbGenres , dbPlatforms,stToObj, videogamesAPI, gameDetail} = require('./controllers');
+const { dbGenres , dbPlatforms,stToObj, videogamesAPI, gameDetail, stToArr} = require('./controllers');
 const {Genres, Videogame, Platforms, videogamegenres}=require('../db');
 require("dotenv").config(); 
 const webplat=process.env.WEB_PLATFORMS+process.env.API_TOKEN;
@@ -57,30 +57,24 @@ router.get('/videogames', async(req, res) => {
 else if(!req.query.name) {    
      try { 
         /**              */
-        console.log('paciencia')
+      
        if(arrayResultsV.length===0)
        { let result1L = 0; 
-        console.log('entre al if')
-        for(let i=0;i<6;i++){
+         for(let i=0;i<6;i++){
             let webplat1;
             if(i===0){webplat1 = webplat;}
             else{webplat1 = webplat+'&page='+ i } 
             if(i!==1){
              const result1 = await videogamesAPI(webplat1);
-             
              arrayResultsV =  arrayResultsV.concat(await result1)
             result1L =  result1L + await result1.length;
-             console.log( arrayResultsV.length);
-                          
+                        
         }} }
         /**/
          arrayResultsV.forEach(element => element.id>idmaxV? idmaxV=element.id:null)
-          console.log('linea 75')
         /** */
         let videogames = await Videogame.findAll();
-         console.log('linea 78')
-         console.log(videogames.length)
-        if(videogames.length) { console.log('linea 79')
+        if(videogames.length) { 
             for(let i=0;i<videogames.length;i++){let arrGen =[];
                 let arrPlat=videogames[i].platforms.split(',');
                  gamegenres = await videogamegenres.findAll({  where: {
@@ -90,19 +84,20 @@ else if(!req.query.name) {
                     if(gamegenres[j].videogameId===videogames[i].id){
                     arrGen.push(gamegenres[j].genreId);}
                   }
-                               
+                             
              output[i]={ id:videogames[i].id+idmaxV,
                          name:videogames[i].name,
                          rating:videogames[i].rating,
                          background_image:videogames[i].image,
-                         platforms: await stToObj(arrPlat,Platforms,'platform'),
-                         genres: await stToObj(arrGen,Genres,'genres'),
+                         platforms: await stToArr(arrPlat,Platforms,'platform'),
+                         genres: await stToArr(arrGen,Genres,'genres'),
                          from:"APIDB"
                           }   
             }}
-            console.log('linea 97')
              if(arrayResultsV.length-output.length===100){}
             else if (arrayResultsV.length-output.length<100){  arrayResultsV=arrayResultsV.concat( output)}
+            let hash = {};
+            arrayResultsV = arrayResultsV.filter(o => hash[o.name] ? false : hash[o.name] = true);
             res.json({count:arrayResultsV.length,
                                    next:null,
                                    previous:null,
@@ -115,13 +110,24 @@ else if(!req.query.name) {
 /**GET /videogame/:{idVideogame}  */
 router.get('/videogames/:id', async(req, res) => {
     try {
+        let result2={}
         const id=req.params.id;
         let videogameDetObj={};
         let videogameDet=[];
-        const webid ="https://api.rawg.io/api/games/"+id+"?key="+process.env.API_TOKEN;
-        const result2 =  await gameDetail(id)
-        let platforms = '';           
-                   for(let i=0;i< result2.platforms.length;i++){
+        let platforms = '';  
+                
+        if(arrayResultsV.filter(videogame =>  videogame.id==id&&videogame.from=='APIDB').length)
+       {
+        result2=arrayResultsV.filter(videogame => videogame.id==id)[0];
+        const description = await Videogame.findAll({  where: {
+            name:result2.name,
+          }});
+          result2.description = description[0].description;
+          result2.released = description[0].releaseDate;
+        }
+     else {webid ="https://api.rawg.io/api/games/"+id+"?key="+process.env.API_TOKEN;
+         result2 =  await gameDetail(id)}  
+             for(let i=0;i< result2.platforms.length;i++){
                     if(i<result2.platforms.length-1){platforms+= result2.platforms[i].platform.name+', '}
                     else{platforms+= result2.platforms[i].platform.name}
                 }

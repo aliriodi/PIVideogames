@@ -6,7 +6,7 @@ module.exports =   (sequelize) => {
   sequelize.define('videogame', {
     idv: {
       type: DataTypes.INTEGER,
-      allowNull: false,
+      allowNull: true,
         },
     name: {
       type: DataTypes.STRING,
