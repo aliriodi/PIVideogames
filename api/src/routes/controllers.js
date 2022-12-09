@@ -17,8 +17,7 @@ const genresApi = async () => {
     const apiUrl = await fetch(webgen)
     .then((response) => response.json())
     .then(json => json.results.map(genres=>
-                                   {return {idg:genres.id,
-                                            name:genres.name,}}));
+                                   {return {name:genres.name}}));
 
     return apiUrl;
 };
@@ -38,14 +37,14 @@ const platformsApi = async (webplat) => {
     const apiUrl = await fetch(webplat)
     .then((response) => response.json())
     .then((json) =>  json.results.map(arrayGames=>
-                                       {let a=[];  
+                                       {let a=[];  console.log(arrayGames.platforms.length)
                                           for (const i in arrayGames.platforms) {
                                           a.push({idp: arrayGames.platforms[i].platform.id, name:arrayGames.platforms[i].platform.name})
-                                          return a;                             }
-                                        }                                  
+                                                                                }
+                                        return a; }                                  
                                         ))
                                    .then(result => {let i=0;let j=0;let b=[];
-                                                    for(i=0;i<20;i++){
+                                                    for(i=0;i<result.length;i++){
                                                        for(j=0;j<result[i].length;j++){
                                                        {b.push({idp:result[i][j].idp,
                                                         name:result[i][j].name})}
