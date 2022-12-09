@@ -19,9 +19,6 @@ import "./Nav.css";
          // eslint-disable-next-line react-hooks/exhaustive-deps
           },[dispatch]);    
    
-      (function(){ return videogames.results.length===0?
-      dispatch(order([{id:'0',name:'No existe videojuego',genres:[{name:[null]}]}])) 
-      :videogames.results})();
       
        /* Ordenamiento con cb*/
    function order1 (typeorder){
@@ -55,7 +52,6 @@ import "./Nav.css";
             videogames.results.map(videogame=> videogame.hasOwnProperty('from')? videogamesR.push(videogame): null)  
           }
           else {videogamesR=videogames}
-          console.log(filter0)
           dispatch(movepage({idPageNow:1}));
           dispatch(order(videogamesR));
         }
@@ -79,7 +75,7 @@ import "./Nav.css";
        <select className={'navLi'} onChange={e => {filter(e.target.value)}}>
                                 <option key='API' value={null}>==Filtros API== </option>
                                 <option key='APIEXT' value={'apiExt'}> API EXT </option>
-                                <option key='APIBD' value={'apiBD'}> API LOCAL </option> 
+                                <option key='APIBD' value={'apiBD'}> API BD </option> 
                   </select>
       </li> 
       

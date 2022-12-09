@@ -94,7 +94,6 @@ function validate(input) {
             {return alert('Wrong format for Rating. Should be a number between 0-5')
          }
          if (input.platforms.length===0) {return alert('Platform is required')}
-         console.log(input)
          setInput(
             {...input,
                 genres:input.genres.split(',').sort().filter(

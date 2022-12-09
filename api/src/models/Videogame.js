@@ -18,19 +18,19 @@ module.exports =   (sequelize) => {
    },
    description:{
     type: DataTypes.STRING,
-    allowNull: false,
+    allowNull: true,
    },
    releaseDate:{
     type: DataTypes.DATEONLY,
-    allowNull: false,
+    allowNull: true,
    },
    rating:{
     type: DataTypes.DECIMAL,
-    allowNull: false,
+    allowNull: true,
    },
    platforms:{
     type: DataTypes.STRING,
-    allowNull: false,
+    allowNull: true,
    }
   },
   {timestamps: false}

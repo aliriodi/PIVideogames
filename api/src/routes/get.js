@@ -1,6 +1,5 @@
 const { Router } = require('express');
 const router = Router();
-const axios = require('axios');
 const { dbGenres , dbPlatforms,stToObj, videogamesAPI, gameDetail, stToArr} = require('./controllers');
 const {Genres, Videogame, Platforms, videogamegenres}=require('../db');
 require("dotenv").config(); 
@@ -27,8 +26,7 @@ router.get('/platforms', async(req, res) => {
             let webplat1;
             if(i===0){webplat1 = webplat;}
             else{webplat1 = webplat+'&page='+ i }
-            if(i!==1){await dbPlatforms(webplat1);
-                      console.log(webplat1)}
+            if(i!==1){await dbPlatforms(webplat1);}
         } 
         await dbPlatforms();
         let platforms = await Platforms.findAll();

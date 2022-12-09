@@ -56,6 +56,10 @@ export const CreateVideogame =  (values) => {
 };
 
 export const order = (videogames) => {
+  if (videogames.length===0){videogames=
+    [{id:'0',
+      name:'No existen videojuegos en la BD',
+      genres:[{name:[null]}]}]}
   const videogamesOut = {count:videogames.length,
                          next:null,
                          previous:null,
@@ -83,8 +87,14 @@ export const postCreateVideogame = (videogame) => {
 };
 export const  searchv = (vgame)=>{
   return async function (dispatch) {
-    return   fetch("http://localhost:3001/videogames?name="+'"'+vgame+'"')
+    return   fetch("http://localhost:3001/videogames?name=".concat('"'+vgame+'"'))
     .then((response) => response.json())
-    .then((json) =>  dispatch({type: GET_SEARCH_VIDEOGAME,payload: json}))
+    .then((json) => {json.results.length===0?dispatch({type: GET_SEARCH_VIDEOGAME,payload: {count:1,
+                                                                                            next:null,
+                                                                                            previous:null,
+                                                                                            results:[{id:'0',
+                                                                                            name:'No existe videojuego',
+                                                                                            genres:[{name:[null]}]}]} }) 
+                                             : dispatch({type: GET_SEARCH_VIDEOGAME,payload: json})})
   };
 };
