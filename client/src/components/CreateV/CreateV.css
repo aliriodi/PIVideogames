@@ -104,3 +104,34 @@ ul {
     border: 3px solid red;
     color:rgb(145, 6, 34);
 }
+
+
+nav {
+    width: 100%;
+    max-width: 2000px;
+    height: 7vh;
+    min-height: 60px;
+    padding-top: 8px;
+    padding-bottom: 20px;
+    padding-right: 280px;
+    background-color: inherit;
+    color: rgba(255, 255, 255);
+    font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+    display: grid;
+    grid-template-columns: 1fr auto;
+    align-items:center;
+    background-color: rgb(55, 19, 218);
+  }
+  nav .logo2 {
+    padding-right: 422px;
+    font-size: 38px;
+    letter-spacing: 5px;
+  }
+  .navList2 {
+    font-size: 17px;
+    padding-right: 185px;
+    text-transform: uppercase;
+    list-style: none;
+    display: flex;
+    gap: 20px;
+  }

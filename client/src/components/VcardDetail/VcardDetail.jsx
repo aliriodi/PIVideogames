@@ -1,7 +1,7 @@
-import React , {useEffect, useState} from 'react';
+import React , {useEffect} from 'react';
 import { useDispatch, connect} from "react-redux";
 import { useParams, Link  } from 'react-router-dom';
-import { getvideogameDetail} from "../../redux/actions";
+import { getvideogameDetail,getAllVideogames} from "../../redux/actions";
 
 
 export  function VcardDetail({videogameDetail}) {
@@ -11,14 +11,16 @@ export  function VcardDetail({videogameDetail}) {
       dispatch(getvideogameDetail(id));
       // eslint-disable-next-line react-hooks/exhaustive-deps
   },[dispatch])
- 
-  
+  useEffect(() => {
+    dispatch(getAllVideogames());
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+},[dispatch])
    return (
     <div>
-      <nav> <div className="logo">NavBar</div>
-       <ul className="navList">
-      <li className="navLi"> <Link to='/home'>HOME </Link></li>
-      <li className="navLi"><Link to='/home/create'>CREAR VIDEOGAME </Link> </li> 
+      <nav> <div className="logo2"></div>
+       <ul className="navList2">
+      <li className="navLi2"> <Link to='/home'>HOME </Link></li>
+      <li className="navLi2"><Link to='/home/create'>CREAR VIDEOGAME </Link> </li> 
       </ul>
       </nav>  
            

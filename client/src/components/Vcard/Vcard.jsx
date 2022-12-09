@@ -5,9 +5,9 @@ export default function Vcard(props) {
     <div className="card">
       
          <h4 className="flex-items">{props.name}</h4>
-       <a href={`/videogames/${props.id}`}><img  className="image" src={props.image}  alt={props.name}/>  </a>
+       {props.image?<a href={`/videogames/${props.id}`}><img  className="image" src={props.image}  alt={props.name}/>  </a>:null}
        
-    <h5><strong>Generos: </strong> </h5>
+    <h5><strong>{props.image?'Generos':null }</strong> </h5>
     <p className="genres">{props.genres.map((object) => ' '+object.name).toString()  }</p>
     <p></p>
     </div>

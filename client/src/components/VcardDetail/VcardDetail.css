@@ -14,14 +14,14 @@
     align-items:center;
     background-color: rgb(58, 21, 220);
   }
-nav .logo {
-    padding-right: 120px;
+  nav .logo2 {
+    padding-right: 422px;
     font-size: 38px;
     letter-spacing: 5px;
   }
-/*Home , boxes , projects */
-  .navList {
+  .navList2 {
     font-size: 17px;
+    padding-right: 190px;
     text-transform: uppercase;
     list-style: none;
     display: flex;
